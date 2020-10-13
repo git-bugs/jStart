@@ -1,26 +1,20 @@
 'use strict'
 
 
-let money = prompt('Ваш месячный доход?'),
-  addExpense = prompt('Перечислите возможные расходы за рассчитываемый период через запятую: Квартплата, проездной, кредит...'),
+let money = +prompt('Ваш месячный доход?', 50000),
+  addExpense = prompt('Перечислите возможные расходы за рассчитываемый период через запятую:', 'квартира, проезд, кредит'),
   deposit = confirm('Есть ли у вас депозит в банке?'),
   expense1 = prompt('Введите обязательную статью расходов?'),
-  amount1 = +prompt('Во сколько это обойдется?'),
+  amount1 = +prompt('Во сколько это обойдется?', 5000),
   expense2 = prompt('Введите обязательную статью расходов?'),
-  amount2 = +prompt('Во сколько это обойдется?'),
+  amount2 = +prompt('Во сколько это обойдется?', 5000),
   mission = 500000;
 
-let exp = addExpense.split(',');
+let exp = addExpense.split(', ');
 console.log(exp);
 
-let sum = 0;
-for(var i = 0; i < exp.length; i++){
-  sum += +(parseInt(exp[i]));
-  
-}
-
 let budgetMonth;
-budgetMonth = money - (sum + amount1 + amount2);
+budgetMonth = money - (amount1 + amount2);
 console.log('Бюджет на месяц: ', budgetMonth);
 
 let missionInterval;
