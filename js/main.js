@@ -1,14 +1,24 @@
 'use strict'
 
+let isNumber = function(n){
+  return !isNaN(parseFloat(n)) && isFinite(n)
+};
 
-let money = +prompt('Ваш месячный доход?', 50000),
+let money,
   addExpense = prompt('Перечислите возможные расходы за рассчитываемый период через запятую:', 'квартира, проезд, кредит'),
   deposit = confirm('Есть ли у вас депозит в банке?'),
-  expense1 = prompt('Введите обязательную статью расходов?'),
-  amount1 = +prompt('Во сколько это обойдется?', 5000),
-  expense2 = prompt('Введите обязательную статью расходов?'),
-  amount2 = +prompt('Во сколько это обойдется?', 5000),
   mission = 500000;
+
+let start = function(){
+
+  do{
+    money = prompt('Ваш месячный доход?');
+  }
+  while (!isNumber(money)) 
+  
+};
+
+start();
 
 let showTypeOf = function(data){
   return console.log(typeof(data))
@@ -16,22 +26,46 @@ let showTypeOf = function(data){
 showTypeOf(money);
 showTypeOf(deposit);
 
-let getExpenseMonth = function(a1, a2){
-  return a1 + a2;
-};
-let allExp = getExpenseMonth(amount1,amount2);
-console.log('Расходы за месяц: ', allExp)
+let expenses = [];
 
-let getAccumulatedMomth = function(a , b){
-  return a - b;
-};
-let accumulatedMonth = getAccumulatedMomth(money, getExpenseMonth(amount1,amount2));
+let getExpenseMonth = function(){
+  let sum = 0, exp;
 
-let getTargetMonth = function(a , b){
-  return Math.ceil(a / b);
+  for( let i = 0; i < 2; i++){
+
+    expenses[i] = prompt('Введите обязательную статью расходов?');
+
+    do{
+      exp = prompt('Во сколько это обойдется?');
+    }
+    while (!isNumber(exp)) 
+
+    sum += +exp;
+
+  }
+  return sum;
 };
-let mounths = getTargetMonth(mission, accumulatedMonth);
-console.log('Месяцев до цели: ', mounths);
+
+let expensesAmount = getExpenseMonth();
+console.log('Расходы за месяц: ', expensesAmount)
+
+let getAccumulatedMomth = function(){
+  return money - expensesAmount;
+};
+let accumulatedMonth = getAccumulatedMomth();
+
+let getTargetMonth = function(){
+  let mounths = Math.ceil(mission / accumulatedMonth);
+
+  if ( mounths < 0){
+    console.log('Цель не будет достигнута');
+  } else {
+    console.log('Цель будет достигнута ', mounths);
+  };
+
+};
+getTargetMonth();
+
 
 
 let exp = addExpense.split(', ');
