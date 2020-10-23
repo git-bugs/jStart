@@ -22,7 +22,8 @@ let start = document.querySelector('#start'),
   targetAmount = document.querySelector('.target-amount'),
   periodSelect = document.querySelector('.period-select'),
   additionalExpensesItem = document.querySelector('.additional_expenses-item'),
-  incomeItem = document.querySelectorAll('.income-items')
+  incomeItem = document.querySelectorAll('.income-items'),
+  inputs = document.querySelectorAll('input')
 
 
   let isNumber = function(n){
@@ -70,6 +71,8 @@ let start = document.querySelector('#start'),
     },
     addExpensesBlock: function(){
       let cloneExpensesItem = expensesItems[0].cloneNode(true);
+      cloneExpensesItem.children[0].value = '';
+      cloneExpensesItem.children[1].value = '';
       expensesItems[0].parentNode.insertBefore(cloneExpensesItem, expensesPlus);
       expensesItems = document.querySelectorAll('.expenses-items');
       if (expensesItems.length === 3){
@@ -78,6 +81,8 @@ let start = document.querySelector('#start'),
     },
     addIncomeBlock: function(){
       let cloneIncomeItem = incomeItem[0].cloneNode(true);
+      cloneIncomeItem.children[0].value = '';
+      cloneIncomeItem.children[1].value = '';
       incomeItem[0].parentNode.insertBefore(cloneIncomeItem, incomePlus);
       incomeItem = document.querySelectorAll('.income-items');
       if (incomeItem.length === 3){
@@ -163,7 +168,7 @@ let start = document.querySelector('#start'),
       return appData.budgetMonth * periodSelect.value
     }
   };
-  
+
   start.addEventListener('click', function(e){
     if (salaryAmount.value !== '' && isNumber(salaryAmount.value)){
       appData.start();
@@ -181,8 +186,30 @@ let start = document.querySelector('#start'),
     appData.showResult();
   });
 
-  
-  for (let key in appData.addExpenses){
-    appData.addExpenses[key] = appData.addExpenses[key][0].toUpperCase() + appData.addExpenses[key].slice(1);
+
+  let inputNum = function(event){
+    if((event.keyCode < 48)||(event.keyCode > 57)) event.returnValue=false
   }
+
+  let inputText = function(event){
+    if((event.keyCode > 43) && (event.keyCode < 47)) {
+      event.returnValue=true;
+    } else if ((event.keyCode > 1039) && (event.keyCode < 1104)){
+      event.returnValue=true;
+    } else if (event.keyCode === 32){
+      event.returnValue=true;
+    } else {
+      event.returnValue=false;
+    }
+  }
+
+
+  for (let i = 0; i < inputs.length; i++){
+    if(inputs[i].placeholder === 'Сумма'){
+      inputs[i].addEventListener('keypress', inputNum)
+    } else {
+      inputs[i].addEventListener('keypress', inputText)
+    }
+  }
+
   
