@@ -1,0 +1,22 @@
+body{
+  text-align: center;
+}
+h1{
+  font-size: 30px;
+  margin: 30px;
+}
+
+ul{
+  margin-top: 30px;
+}
+
+.user-btn{
+  margin-left: 100px;
+}
+
+.user-item{
+  margin: 0 auto;
+  max-width: 700px;
+  display: flex;
+  justify-content: space-between;
+}
