@@ -72,12 +72,6 @@ let appData = {
       item.value = '';
       if (item.getAttribute('type') == 'text') item.readOnly = false;
     }
-    for (let i = 1; i < expensesItems.length; i++) {
-      expensesItems[i].remove()
-    }
-    for (let i = 1; i < incomeItem.length; i++) {
-      incomeItem[i].remove()
-    }
     startBtn.style.display = 'block';
     cancelBtn.style.display = 'none';
     for (let item of btnPlus) {
@@ -88,6 +82,7 @@ let appData = {
     appData.incomeMonth = 0;
     appData.expenses = {};
     appData.expensesMonth = 0;
+    console.log(appData);
   },
   addExpensesBlock: function () {
     let cloneExpensesItem = expensesItems[0].cloneNode(true);
