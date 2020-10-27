@@ -20,12 +20,12 @@ document.addEventListener('DOMContentLoaded', function () {
       } else return;
       item.style.cssText = 'height:' + this.height + 'px; width:' + this.width + 'px; background:' + this.bg + '; font-size:' + this.fontSize + 'px; position: absolute; left:' + this.left + 'px; top:' + this.top + 'px;';
       document.body.append(item);
+      document.body.style.height = '100vh';
     };
     this.position = function (event) {
       let item = document.body.lastChild,
       width = document.body.clientWidth,
       height = document.body.clientHeight;
-      console.log(height, width);
       if (event.key == 'ArrowRight' && this.left < width -100 ) {
         item.style.left = this.left + 10 + 'px';
         this.left += 10;
