@@ -21,7 +21,10 @@ const startBtn = document.querySelector('#start'),
   targetAmount = document.querySelector('.target-amount'),
   periodSelect = document.querySelector('.period-select'),
   additionalExpensesItem = document.querySelector('.additional_expenses-item'),
-  periodAmaunt = document.querySelector('.period-amount');
+  periodAmaunt = document.querySelector('.period-amount'),
+  depositBank = document.querySelector('.deposit-bank'),
+  depositAmount = document.querySelector('.deposit-amount'),
+  depositPercent = document.querySelector('.deposit-percent');
 
 let inputs = document.querySelectorAll('input'),
   expensesItems = document.querySelectorAll('.expenses-items'),
@@ -66,6 +69,7 @@ class AppData {
     this.getExpInc();
     this.getAddExpenses();
     this.getAddIncome();
+    this.getInfoDeposit();
     this.getBudget();
     this.showResult();
   };
@@ -103,6 +107,9 @@ class AppData {
     this.expenses = {};
     this.expensesMonth = 0;
     this.budgetMonth = 0;
+    depositCheck.checked = false;
+    this.moneyDeposit = 0;
+    this.depositHandler();
     periodSelect.value = 1;
     periodAmaunt.innerHTML = 1;
   };
@@ -156,7 +163,8 @@ class AppData {
     for (let key in this.expenses) {
       this.expensesMonth += +this.expenses[key];
     };
-    this.budgetMonth = this.budget + this.incomeMonth - this.expensesMonth;
+    const monthDeposit = this.moneyDeposit * (this.percentDeposit / 100);
+    this.budgetMonth = this.budget + this.incomeMonth - this.expensesMonth + monthDeposit;
     this.budgetDay = Math.floor(this.budgetMonth / 30);
   };
   getTargetMonth() {
@@ -168,12 +176,60 @@ class AppData {
     periodAmaunt.innerHTML = periodSelect.value;
     return incomePeriodValue.value = this.budgetMonth * periodSelect.value;
   };
+  changePercent() {
+    const valueSelect = this.value;
+    if (valueSelect === 'other'){
+      depositPercent.style.display = 'inline-block'
+    } else {
+      depositPercent.value = valueSelect;
+    }
+  };
+  percentChangeValue() {
+    console.log(depositPercent.value);
+    if (depositPercent.value < 101){
+      startBtn.disabled = false;
+      depositPercent.title = '';
+      startBtn.style.background = '#353a43';
+      startBtn.style.cursor = 'pointer';
+    } else {
+      startBtn.disabled = true;
+      startBtn.style.background = 'red';
+      startBtn.style.cursor = 'default';
+      alert('Введите процент от 0 до 100');
+      
+    }
+  };
+  depositHandler() {
+    if (depositCheck.checked){
+      depositBank.style.display = 'inline-block';
+      depositAmount.style.display = 'inline-block';
+      this.deposit = true;
+      depositBank.addEventListener('change', this.changePercent);
+    } else {
+      depositBank.style.display = 'none';
+      depositAmount.style.display = 'none';
+      depositPercent.style.display = 'none';
+      depositPercent.value = '';
+      depositBank.value = '';
+      depositAmount.value = '';
+      this.deposit = false;
+      depositBank.removeEventListener('change', this.changePercent);
+    }
+  };
+  getInfoDeposit() {
+    if (this.deposit){
+      this.percentDeposit = depositPercent.value;
+      this.moneyDeposit = depositAmount.value;
+    }
+  };
   eventListeners() {
     cancelBtn.addEventListener('click', this.reset.bind(this));
     expensesPlus.addEventListener('click', this.addBlock);
     incomePlus.addEventListener('click', this.addBlock);
     startBtn.addEventListener('click', this.start.bind(this));
     periodSelect.addEventListener('input', this.calcPeriod.bind(this));
+    depositCheck.addEventListener('change', this.depositHandler.bind(this));
+    depositPercent.addEventListener('input', this.percentChangeValue)
     numOrText();
   };
 };
@@ -181,7 +237,7 @@ class AppData {
 const numOrText = function () {
   inputs = document.querySelectorAll('input');
   for (let i = 0; i < inputs.length; i++) {
-    if (inputs[i].placeholder === 'Сумма') {
+    if (inputs[i].placeholder === 'Сумма' || inputs[i].placeholder === 'Процент') {
       inputs[i].addEventListener('keypress', inputNum)
     } else {
       inputs[i].addEventListener('keypress', inputText)
