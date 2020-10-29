@@ -188,7 +188,6 @@ class AppData {
     console.log(depositPercent.value);
     if (depositPercent.value < 101){
       startBtn.disabled = false;
-      depositPercent.title = '';
       startBtn.style.background = '#353a43';
       startBtn.style.cursor = 'pointer';
     } else {
