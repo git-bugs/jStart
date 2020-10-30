@@ -62,16 +62,44 @@ class AppData {
       }
       startBtn.style.display = 'none';
       cancelBtn.style.display = 'block';
+      this.budget = +salaryAmount.value;
+      this.getExpInc();
+      this.getAddExpenses();
+      this.getAddIncome();
+      this.getInfoDeposit();
+      this.getBudget();
+      this.showResult();
+      this.pushData();
     } else {
       alert('Введите месячный доход')
     }
-    this.budget = +salaryAmount.value;
-    this.getExpInc();
-    this.getAddExpenses();
-    this.getAddIncome();
-    this.getInfoDeposit();
-    this.getBudget();
-    this.showResult();
+  };
+  pushData() {
+    const items = document.querySelectorAll('.result-total');
+    items.forEach(item => {
+      const key = item.className.split(' ')[1];
+      localStorage.setItem(key, item.value);
+      document.cookie = `${key} = ${item.value}`;
+      document.cookie = 'isLoad=true';
+    });
+  };
+  getData() {
+    if (localStorage['expenses_month-value']) {
+      for (let item of inputs) {
+        item.value = '';
+        if (item.getAttribute('type') == 'text') {
+          item.readOnly = true;
+          item.style.background = '#ccc';
+        }
+      }
+      for (let i in localStorage) {
+        if (localStorage.getItem(i)) {
+          startBtn.style.display = 'none';
+          cancelBtn.style.display = 'block';
+          document.querySelector(`.${i}`).value = localStorage[i]
+        }
+      }
+    }
   };
   showResult() {
     budgetMonthValue.value = this.budgetMonth;
@@ -100,6 +128,13 @@ class AppData {
     }
     for (let i = 1; i < expensesItems.length; i++) {
       expensesItems[i].remove();
+    }
+    for (let key in localStorage) {
+      localStorage.removeItem(key)
+    }
+    const cookieTemp = document.cookie.split(';');
+    for (let item of cookieTemp){
+      document.cookie = item.trim().slice(0, item.indexOf('=')) + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;";
     }
     this.income = {};
     this.addIncome = [];
@@ -178,15 +213,14 @@ class AppData {
   };
   changePercent() {
     const valueSelect = this.value;
-    if (valueSelect === 'other'){
+    if (valueSelect === 'other') {
       depositPercent.style.display = 'inline-block'
     } else {
       depositPercent.value = valueSelect;
     }
   };
   percentChangeValue() {
-    console.log(depositPercent.value);
-    if (depositPercent.value < 101){
+    if (depositPercent.value < 101) {
       startBtn.disabled = false;
       startBtn.style.background = '#353a43';
       startBtn.style.cursor = 'pointer';
@@ -195,11 +229,11 @@ class AppData {
       startBtn.style.background = 'red';
       startBtn.style.cursor = 'default';
       alert('Введите процент от 0 до 100');
-      
+
     }
   };
   depositHandler() {
-    if (depositCheck.checked){
+    if (depositCheck.checked) {
       depositBank.style.display = 'inline-block';
       depositAmount.style.display = 'inline-block';
       this.deposit = true;
@@ -216,23 +250,39 @@ class AppData {
     }
   };
   getInfoDeposit() {
-    if (this.deposit){
+    if (this.deposit) {
       this.percentDeposit = depositPercent.value;
       this.moneyDeposit = depositAmount.value;
     }
   };
   eventListeners() {
+    this.getData();
     cancelBtn.addEventListener('click', this.reset.bind(this));
     expensesPlus.addEventListener('click', this.addBlock);
     incomePlus.addEventListener('click', this.addBlock);
     startBtn.addEventListener('click', this.start.bind(this));
     periodSelect.addEventListener('input', this.calcPeriod.bind(this));
     depositCheck.addEventListener('change', this.depositHandler.bind(this));
-    depositPercent.addEventListener('input', this.percentChangeValue)
+    depositPercent.addEventListener('input', this.percentChangeValue);
+    document.addEventListener('focus', this.checkCookie.bind(this));
     numOrText();
   };
+  checkCookie() {
+    const cookieArray = document.cookie.split(';')
+    const temp = [];
+    for (let item of cookieArray) {
+      if (item.slice(item.indexOf('-') + 1, item.indexOf('=')) === 'value') {   
+        temp.push(item.trim().split('='));
+      }
+    }
+    if (temp.length === localStorage.length) {
+      temp.forEach( item => {
+        if (localStorage.getItem(item[0]) == item[1]) {
+        } else this.reset();
+      })
+    } else this.reset()
+  };
 };
-
 const numOrText = function () {
   inputs = document.querySelectorAll('input');
   for (let i = 0; i < inputs.length; i++) {
@@ -260,3 +310,8 @@ const inputText = function (event) {
 
 const appData = new AppData();
 appData.eventListeners();
+
+
+
+
+
