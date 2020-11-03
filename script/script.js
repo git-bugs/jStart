@@ -34,28 +34,50 @@ window.addEventListener('DOMContentLoaded', function () {
     const btnMenu = document.querySelector('.menu'),
       menu = document.querySelector('menu'),
       closeBtn = document.querySelector('.close-btn'),
-      menuItems = menu.querySelectorAll('ul>li');
-
-    const handlerMenu = () => {
+      menuItems = menu.querySelectorAll('ul>li>a');
+    const handlerMenu = function () {
       menu.classList.toggle('active-menu');
     };
     btnMenu.addEventListener('click', handlerMenu);
     closeBtn.addEventListener('click', handlerMenu);
-    menuItems.forEach(item => item.addEventListener('click', handlerMenu));
+    menuItems.forEach(item => item.addEventListener('click', function (e) {
+      e.preventDefault();
+      menu.classList.toggle('active-menu');
+      scroll(this);
+    }));
   };
   toggleMenu();
+
+
+  const anch = () => {
+    const anchBtn = document.querySelector('main a');
+    anchBtn.addEventListener('click', function (event) {
+      event.preventDefault();
+      scroll(this);
+    });
+  };
+  const scroll = item => {
+    const id = item.getAttribute('href').substring(1);
+    const elem = document.getElementById(id);
+    window.scroll({
+      top: elem.offsetTop,
+      behavior: 'smooth'
+    });
+  };
+  anch();
+
 
   const togglePopUp = () => {
     const popup = document.querySelector('.popup'),
       popupBtn = document.querySelectorAll('.popup-btn'),
       popupClose = document.querySelector('.popup-close'),
       popupContent = document.querySelector('.popup-content')
-   
+
     let count;
 
     popupBtn.forEach(item => {
       item.addEventListener('click', () => {
-        if (screen.width > 768){
+        if (screen.width > 768) {
           popup.style.display = 'block';
           count = -popupContent.clientHeight;
           popupContent.style.top = count + 'px';
@@ -80,6 +102,7 @@ window.addEventListener('DOMContentLoaded', function () {
   };
   togglePopUp();
 
+ 
 
 
 
