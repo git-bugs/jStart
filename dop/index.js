@@ -8,4 +8,4 @@ day = dayArray[date.getDay()],
 time = date.toLocaleTimeString('en-Us'),
 days = Math.floor((new Date('2021').getTime() - new Date().getTime()) / 3600 / 24 / 1000);
 
-document.write(hour + '</br>Сегодня: ' + day + '</br>Текущее время: ' + time + `</br>До нового года осталось ${days} дней`)
+document.write(hour + '</br>Сегодня: ' + day + '</br>Текущее время: ' + time + `</br>До нового года осталось ${days} дней`);
