@@ -6,7 +6,7 @@ window.addEventListener('DOMContentLoaded', function () {
       timeMinuts = document.querySelector('#timer-minutes'),
       timeSeconds = document.querySelector('#timer-seconds');
 
-    function getTimeRemaining() {
+    const getTimeRemaining = () => {
       let dateStop = new Date(deadline).getTime(),
         dateNow = new Date().getTime(),
         timeRemainig = (dateStop - dateNow) / 1000,
@@ -15,7 +15,7 @@ window.addEventListener('DOMContentLoaded', function () {
         hours = Math.floor(timeRemainig / 60 / 60);
       return { timeRemainig, hours, minutes, seconds };
     }
-    function updateClock() {
+    const updateClock = () => {
       let timer = getTimeRemaining();
       if (timer.timeRemainig > 0) {
         timeHours.textContent = timer.hours < 10 ? '0' + timer.hours : timer.hours;
@@ -31,23 +31,22 @@ window.addEventListener('DOMContentLoaded', function () {
   countTimer('14 november 2020')
 
   const toggleMenu = () => {
-    const btnMenu = document.querySelector('.menu'),
-      menu = document.querySelector('menu');
+    const menu = document.querySelector('menu');
 
     const handlerMenu = function () {
       menu.classList.toggle('active-menu');
     };
 
-    menu.addEventListener('click', (event) => {
+    document.body.addEventListener('click', (event) => {
       let target = event.target;
-      if (target.matches('ul>li>a')) {
+      if (target.matches('menu li>a')) {
         event.preventDefault();
         handlerMenu();
         scroll(target);
-      } else if (target.matches('.close-btn')) handlerMenu();
+      } else if (target.matches('.close-btn') || target.closest('.menu')) {
+        handlerMenu();
+      } else if (menu.classList.contains('active-menu') && !target.closest('menu')) handlerMenu();
     })
-
-    btnMenu.addEventListener('click', handlerMenu);
   };
   toggleMenu();
 
