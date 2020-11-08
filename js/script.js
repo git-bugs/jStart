@@ -21,18 +21,19 @@ class Todo {
     this.addToStorage();
   }
 
-  createItem(todo) { 
+  createItem(todo) {
     const li = document.createElement('li');
     li.classList.add('todo-item');
     li.key = todo.key;
     li.insertAdjacentHTML('beforeend', `
 				<span class="text-todo">${todo.value}</span>
-				<div class="todo-buttons">
+        <div class="todo-buttons">
+          <button class="todo-edit"></button>
 					<button class="todo-remove"></button>
 					<button class="todo-complete"></button>
 				</div>
     `);
-    if (todo.complated){
+    if (todo.complated) {
       this.todoCompleted.append(li);
     } else {
       this.todoList.append(li);
@@ -48,7 +49,7 @@ class Todo {
         key: this.generateKey()
       }
       this.todoData.set(newTodo.key, newTodo)
-    }
+    } else alert('Пустое дело добавить нельзя');
     this.input.value = '';
     this.render();
   }
@@ -59,21 +60,54 @@ class Todo {
 
   handler = (event) => {
     let target = event.target;
-    if (target.classList.contains('todo-remove')) this.deleteItem(target.closest('.todo-item'));
-    if (target.classList.contains('todo-complete')) this.compatedItem(target.closest('.todo-item'));
+    if (target.classList.contains('todo-remove')) {
+      this.deleteItem(target.closest('.todo-item'));
+    } else if (target.classList.contains('todo-complete')) {
+      this.complatedItem(target.closest('.todo-item'));
+    } else if (target.classList.contains('todo-edit')) {
+      this.textEdit(target);
+    }
+  }
+
+  textEdit(target) {
+    const textSpan = target.closest('.todo-item').querySelector('.text-todo');
+    textSpan.setAttribute('contenteditable', true);
+    textSpan.focus();
+    textSpan.addEventListener('blur', () => {
+      textSpan.setAttribute('contenteditable', false);
+      const temp = { ...this.todoData.get(target.closest('.todo-item').key) };
+      this.todoData.delete(target.closest('.todo-item').key);
+      temp.value = textSpan.textContent;
+      this.todoData.set(target.closest('.todo-item').key, temp);
+      this.addToStorage();
+    })
   }
 
   deleteItem(target) {
     this.todoData.delete(target.key);
-    this.render();
+    this.animate(target);
   }
 
-  compatedItem(target) {
-    const temp = {...this.todoData.get(target.key)};
+  complatedItem(target) {
+    const temp = { ...this.todoData.get(target.key) };
     this.todoData.delete(target.key);
     temp.complated = !temp.complated;
     this.todoData.set(target.key, temp);
-    this.render();
+    this.animate(target);
+  }
+
+  animate(target) {
+    let count = 0;
+    const anim = () => {
+      if (count <= 100) {
+        target.style.transform = `translateX(${count}%)`;
+        count++;
+      } else {
+        clearInterval(id);
+        this.render();
+      }
+    }
+    const id = setInterval(anim, 1);
   }
 
   init() {
