@@ -48,7 +48,7 @@ class Todo {
         key: this.generateKey()
       }
       this.todoData.set(newTodo.key, newTodo)
-    }
+    } else alert('Пустое дело добавить нельзя!')
     this.input.value = '';
     this.render();
   }
