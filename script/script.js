@@ -147,11 +147,11 @@ window.addEventListener('DOMContentLoaded', function () {
       dotList = document.querySelector('.portfolio-dots');
 
     let currentSlide = 0,
-    interval,
-    dot = document.querySelectorAll('.dot');
+      interval,
+      dot = document.querySelectorAll('.dot');
 
     const dotsRender = () => {
-      for (let i = 0; i < slide.length; i++){
+      for (let i = 0; i < slide.length; i++) {
         const li = document.createElement('li');
         li.classList.add('dot');
         dotList.append(li);
@@ -216,13 +216,13 @@ window.addEventListener('DOMContentLoaded', function () {
     });
 
     slider.addEventListener('mouseover', event => {
-      if(event.target.matches('.portfolio-btn') || event.target.matches('.dot')){
+      if (event.target.matches('.portfolio-btn') || event.target.matches('.dot')) {
         stopSlide();
       }
     });
 
     slider.addEventListener('mouseout', event => {
-      if(event.target.matches('.portfolio-btn') || event.target.matches('.dot')){
+      if (event.target.matches('.portfolio-btn') || event.target.matches('.dot')) {
         startSlide();
       }
     });
@@ -231,7 +231,30 @@ window.addEventListener('DOMContentLoaded', function () {
   };
   slider();
 
+  const changeImg = () => {
+    const images = document.getElementById('command');
+    const toggle = event => {
+      let target = event.target;
+      if (target.classList.contains('command__photo')) {
+        [target.src, target.dataset.img] = [target.dataset.img, target.src];
+      }
+    }
+    images.addEventListener('mouseout', toggle);
+    images.addEventListener('mouseover', toggle);
+  };
+  changeImg();
 
-
-
+  const calcValid = () => {
+    const calcInput = document.querySelector('.calc');
+    const inputNum = (event) => {
+      let target = event.target;
+      if (target.matches('.calc-item')) {
+        target.addEventListener('input', () => {
+          target.value = target.value.replace(/\D/g, '')
+        })
+      }
+    }
+    calcInput.addEventListener('click', inputNum)
+  }
+  calcValid();
 });
