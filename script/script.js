@@ -47,11 +47,11 @@ window.addEventListener('DOMContentLoaded', function () {
         handlerMenu();
       } else if (menu.classList.contains('active-menu') && !target.closest('menu')) {
         handlerMenu();
-      } else if( target.tagName.toLowerCase() === 'button' && target.closest('form')){
+      } else if (target.tagName.toLowerCase() === 'button' && target.closest('form')) {
         sendForm(target.closest('form').id);
-      } else if (target.name === 'user_phone'){
+      } else if (target.name === 'user_phone') {
         phoneValid(target);
-      } else if (target.name === 'user_name' || target.name === 'user_message'){
+      } else if (target.name === 'user_name' || target.name === 'user_message') {
         textValid(target);
       }
     })
@@ -336,41 +336,44 @@ window.addEventListener('DOMContentLoaded', function () {
       formData.forEach((val, key) => {
         body[key] = val;
       });
-      postData(body, () => {
-        statusMessage.textContent = successMessage;
-        form.querySelectorAll('input').forEach(item => item.value = '')
-      }, () => {
-        statusMessage.textContent = errorMessage;
-        console.error(error);
-      });
-      
+      postData(body)
+        .then(() => {
+          statusMessage.textContent = successMessage;
+          form.querySelectorAll('input').forEach(item => item.value = '')
+        })
+        .catch(() => {
+          statusMessage.textContent = errorMessage;
+          console.error(error);
+        })
     });
-    const postData = (body, outputData, errorData) => {
-      const request = new XMLHttpRequest();
-      request.addEventListener('readystatechange', () => {
-        if (request.readyState !== 4) {
-          return;
-        }
-        if (request.status === 200) {
-          outputData();
-        } else {
-          errorData(request.status);
-        }
+    const postData = (body) => {
+      return new Promise((resolve, reject) => {
+        const request = new XMLHttpRequest();
+        request.addEventListener('readystatechange', () => {
+          if (request.readyState !== 4) {
+            return;
+          }
+          if (request.status === 200) {
+            resolve();
+          } else {
+            reject(request.status);
+          }
+        });
+        request.open('POST', './server.php');
+        request.setRequestHeader('Content-Type', 'multipart/json');
+        request.send(JSON.stringify(body));
       });
-      request.open('POST', './server.php');
-      request.setRequestHeader('Content-Type', 'multipart/json');
-      request.send(JSON.stringify(body));
     }
   };
 
-  const phoneValid = (target) => {
-    target.addEventListener('input',()=>{
+  const phoneValid = target => {
+    target.addEventListener('input', () => {
       target.value = target.value.replace(/[^\+\d]/, '');
     })
   };
 
   const textValid = target => {
-    target.addEventListener('input',()=>{
+    target.addEventListener('input', () => {
       target.value = target.value.replace(/[^а-я ]/i, '');
     })
   };
