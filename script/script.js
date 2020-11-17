@@ -47,17 +47,16 @@ window.addEventListener('DOMContentLoaded', function () {
         handlerMenu();
       } else if (menu.classList.contains('active-menu') && !target.closest('menu')) {
         handlerMenu();
-      } else if (target.tagName.toLowerCase() === 'button' && target.closest('form')) {
-        sendForm(target.closest('form').id);
       } else if (target.name === 'user_phone') {
         phoneValid(target);
       } else if (target.name === 'user_name' || target.name === 'user_message') {
         textValid(target);
+      } else if (target.type === 'submit') {
+        sendForm(target.closest('form').id);
       }
-    })
+    });
   };
   toggleMenu();
-
 
   const anch = () => {
     const anchBtn = document.querySelector('main a');
@@ -337,31 +336,26 @@ window.addEventListener('DOMContentLoaded', function () {
         body[key] = val;
       });
       postData(body)
-        .then(() => {
-          statusMessage.textContent = successMessage;
-          form.querySelectorAll('input').forEach(item => item.value = '')
-        })
-        .catch(() => {
-          statusMessage.textContent = errorMessage;
-          console.error(error);
-        })
-    });
+      .then((response) => {
+        if (response.status !== 200) {
+          throw new Error('status not 200');
+        }
+        statusMessage.textContent = successMessage;
+        form.querySelectorAll('input').forEach(item => item.value = '')
+      })
+      .catch((error) => {
+        statusMessage.textContent = errorMessage;
+        console.log(error);
+      })
+    })
+
     const postData = (body) => {
-      return new Promise((resolve, reject) => {
-        const request = new XMLHttpRequest();
-        request.addEventListener('readystatechange', () => {
-          if (request.readyState !== 4) {
-            return;
-          }
-          if (request.status === 200) {
-            resolve();
-          } else {
-            reject(request.status);
-          }
-        });
-        request.open('POST', './server.php');
-        request.setRequestHeader('Content-Type', 'multipart/json');
-        request.send(JSON.stringify(body));
+      return fetch('./server.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'multipart/json'
+        },
+        body: JSON.stringify(body)
       });
     }
   };
