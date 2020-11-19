@@ -28,7 +28,7 @@ window.addEventListener('DOMContentLoaded', function () {
     }
     const timerId = setInterval(updateClock, 1000);
   }
-  countTimer('14 november 2020')
+  countTimer('14 dec 2020')
 
   const toggleMenu = () => {
     const menu = document.querySelector('menu');
