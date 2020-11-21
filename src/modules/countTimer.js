@@ -23,6 +23,7 @@ const countTimer = function (deadline) {
       document.getElementById('timer').style.color = 'red';
     }
   }
+  updateClock();
   const timerId = setInterval(updateClock, 1000);
 };
 

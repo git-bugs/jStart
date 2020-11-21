@@ -22,8 +22,10 @@ const sendForm = () => {
         }
         statusMessage.textContent = successMessage;
         form.querySelectorAll('input').forEach(item => item.value = '')
+        setTimeout(()=> statusMessage.textContent = '',5000);
       })
       .catch((error) => {
+        setTimeout(()=> statusMessage.textContent = '',5000);
         statusMessage.textContent = errorMessage;
         console.log(error);
       });
@@ -38,6 +40,10 @@ const sendForm = () => {
       body: JSON.stringify(body)
     });
   }
+
+  const delMess = () => {
+    
+  };
 
   document.body.addEventListener('submit', (event) => {
     event.preventDefault();

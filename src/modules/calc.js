@@ -12,7 +12,6 @@ const calc = (price = 100) => {
       dayValue = 1;
     const typeValue = calcType[calcType.selectedIndex].value,
       squareValue = +calcSquare.value;
-
     if (calcCount.value > 1) {
       countValue += (calcCount.value - 1) / 10;
     }
@@ -24,23 +23,26 @@ const calc = (price = 100) => {
     if (typeValue && squareValue) {
       total = price * typeValue * squareValue * countValue * dayValue;
     }
-    const totalAnimate = () => {
-      let count = totalValue.textContent;
+    let count = +totalValue.textContent;
+    const totalAnimate = (x) => {
       const timer = () => {
-        requestAnimationFrame(timer);
-        if (count < total) {
-          count++;
-          totalValue.textContent = count;
-        } else if (count > total) {
-          count--;
-          totalValue.textContent = count;
-        } else clearInterval(idAnimate);
-      };
+        x ? count += total/20 : count -= total/20;
+        totalValue.textContent = count.toFixed(0);
+        if (count >= total && x) {
+          totalValue.textContent = total.toFixed(0);
+          clearInterval(idAnimate);
+        }
+        if (count <= total && !x) {
+          totalValue.textContent = total.toFixed(0);
+          clearInterval(idAnimate);
+        }
+      }
       const idAnimate = setInterval(timer, 1);
     };
-    totalAnimate();
+    if (count < total) {
+      totalAnimate(1)
+    } else if (count > total) totalAnimate(0);
   };
-
   calcBlock.addEventListener('change', event => {
     let target = event.target;
     if (target.matches('.calc-item')) {

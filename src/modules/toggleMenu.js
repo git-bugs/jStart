@@ -22,6 +22,11 @@ const toggleMenu = () => {
       target.value = target.value.replace(/[^а-я ]/i, '');
     })
   };
+  const messValid = target =>{
+    target.addEventListener('input', () => {
+      target.value = target.value.replace(/[^а-я\.\,\- ]/i, '');
+    })
+  };
   document.body.addEventListener('click', (event) => {
     let target = event.target;
     if (target.matches('menu li>a')) {
@@ -34,8 +39,10 @@ const toggleMenu = () => {
       handlerMenu();
     } else if (target.name === 'user_phone') {
       phoneValid(target);
-    } else if (target.name === 'user_name' || target.name === 'user_message') {
+    } else if (target.name === 'user_name') {
       textValid(target);
+    } else if (target.name === 'user_message') {
+      messValid(target);
     }
   });
 };
